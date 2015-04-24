@@ -126,7 +126,7 @@ export var provider: autocompleteplus.Provider = {
                 .then((resp) => {
                 return resp.files.map(file => {
                     var relativePath = file.relativePath;
-                    var suggestionText = !atomConfig.modulePathToProjectRoot || /^.\//.test(relativePath) ?
+                    var suggestionText = !atomConfig.modulePathToProjectRoot || /^(?!\.\.\/)/.test(relativePath) ?
                         relativePath : '~/' + atom.project.relativize(file.fullPath).replace(/\\/g, '/');
 
                     var suggestion: autocompleteplus.Suggestion = {
@@ -237,7 +237,7 @@ export var provider: autocompleteplus.Provider = {
             if (options.suggestion.atomTS_IsES6Import) {
                 var {row} = options.editor.getCursorBufferPosition();
                 var originalText = (<any>options.editor).lineTextForBufferRow(row);
-                var groups = /([^"'`]*)from\s*(["'])/.exec(originalText);
+                var groups = /(.*)from\s*(["'])/.exec(originalText);
                 var beforeFrom = groups[1];
                 quote = quote || groups[2];
                 var newTextAfterFrom = `from ${quote}${options.suggestion.atomTS_IsES6Import.relativePath}${quote};`;
