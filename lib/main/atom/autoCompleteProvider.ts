@@ -50,6 +50,8 @@ declare module autocompleteplus {
 
     /** What the provider needs to implement */
     export interface Provider {
+        inclusionPriority?: number;
+        excludeLowerPriority?: boolean;
         selector: string;
         getSuggestions: (options: RequestOptions) => Promise<Suggestion[]>;
         onDidInsertSuggestion?: (args: { editor: AtomCore.IEditor; triggerPosition: TextBuffer.IPoint; suggestion: Suggestion }) => any;
@@ -109,6 +111,7 @@ loadSnippets();
 
 export var provider: autocompleteplus.Provider = {
     selector: '.source.ts',
+    inclusionPriority: 1,
     getSuggestions: (options: autocompleteplus.RequestOptions): Promise<autocompleteplus.Suggestion[]>=> {
         var filePath = options.editor.getPath();
 
@@ -229,7 +232,7 @@ export var provider: autocompleteplus.Provider = {
             if (options.suggestion.atomTS_IsImport) {
                 options.editor.moveToBeginningOfLine();
                 options.editor.selectToEndOfLine();
-                var groups = /^\s*import\s*(\w*)\s*=\s*require\(\s*(["'])/.exec(options.editor.getSelectedText());
+                var groups = /^\s*import\s*(\w*)\s*=\s*require\s*\(\s*(["'])/.exec(options.editor.getSelectedText());
                 var alias = groups[1];
                 quote = quote || groups[2];
                 options.editor.replaceSelectedText(null, function() { return `import ${alias} = require(${quote}${options.suggestion.atomTS_IsImport.relativePath}${quote});`; });
