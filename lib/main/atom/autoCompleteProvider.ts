@@ -111,7 +111,6 @@ loadSnippets();
 
 export var provider: autocompleteplus.Provider = {
     selector: '.source.ts',
-    inclusionPriority: 1,
     getSuggestions: (options: autocompleteplus.RequestOptions): Promise<autocompleteplus.Suggestion[]>=> {
         var filePath = options.editor.getPath();
 
@@ -129,8 +128,9 @@ export var provider: autocompleteplus.Provider = {
                 .then((resp) => {
                 return resp.files.map(file => {
                     var relativePath = file.relativePath;
-                    var suggestionText = !atomConfig.modulePathToProjectRoot || /^(?!\.\.\/)/.test(relativePath) ?
-                        relativePath : '~/' + atom.project.relativize(file.fullPath).replace(/\\/g, '/');
+
+                    /** Optionally customize this in future */
+                    var suggestionText = relativePath;
 
                     var suggestion: autocompleteplus.Suggestion = {
                         text: suggestionText,
@@ -222,6 +222,8 @@ export var provider: autocompleteplus.Provider = {
         if (options.suggestion.atomTS_IsReference
             || options.suggestion.atomTS_IsImport
             || options.suggestion.atomTS_IsES6Import) {
+
+            // '' implies we will preserve their quote character
             var quote = (/["']/.exec(atomConfig.preferredQuoteCharacter) || [''])[0];
 
             if (options.suggestion.atomTS_IsReference) {
@@ -234,7 +236,10 @@ export var provider: autocompleteplus.Provider = {
                 options.editor.selectToEndOfLine();
                 var groups = /^\s*import\s*(\w*)\s*=\s*require\s*\(\s*(["'])/.exec(options.editor.getSelectedText());
                 var alias = groups[1];
+
+                // Use the option if they have a preferred. Otherwise preserve
                 quote = quote || groups[2];
+
                 options.editor.replaceSelectedText(null, function() { return `import ${alias} = require(${quote}${options.suggestion.atomTS_IsImport.relativePath}${quote});`; });
             }
             if (options.suggestion.atomTS_IsES6Import) {
@@ -242,7 +247,10 @@ export var provider: autocompleteplus.Provider = {
                 var originalText = (<any>options.editor).lineTextForBufferRow(row);
                 var groups = /(.*)from\s*(["'])/.exec(originalText);
                 var beforeFrom = groups[1];
+
+                // Use the option if they have a preferred. Otherwise preserve
                 quote = quote || groups[2];
+                
                 var newTextAfterFrom = `from ${quote}${options.suggestion.atomTS_IsES6Import.relativePath}${quote};`;
                 options.editor.setTextInBufferRange([[row, beforeFrom.length], [row, originalText.length]], newTextAfterFrom)
 
