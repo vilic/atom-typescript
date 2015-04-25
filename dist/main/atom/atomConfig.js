@@ -14,15 +14,25 @@ var Config = (function () {
                 type: 'boolean',
                 default: false
             },
+            modulePathToProjectRoot: {
+                title: 'Show module path suggestion relative to project root.',
+                type: 'boolean',
+                default: true
+            },
             preferredQuoteCharacter: {
                 title: 'Preferred quote character',
                 type: 'string',
                 default: 'none'
-            },
+            }
         };
     }
     Object.defineProperty(Config.prototype, "debugAtomTs", {
         get: function () { return getConfig('debugAtomTs'); },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Config.prototype, "modulePathToProjectRoot", {
+        get: function () { return getConfig('modulePathToProjectRoot'); },
         enumerable: true,
         configurable: true
     });

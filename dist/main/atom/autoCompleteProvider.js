@@ -44,7 +44,8 @@ exports.provider = {
                 .then(function (resp) {
                 return resp.files.map(function (file) {
                     var relativePath = file.relativePath;
-                    var suggestionText = relativePath;
+                    var suggestionText = !atomConfig.modulePathToProjectRoot || /^(?!\.\.\/)/.test(relativePath) ?
+                        relativePath : '~/' + atom.project.relativize(file.fullPath).replace(/\\/g, '/');
                     var suggestion = {
                         text: suggestionText,
                         replacementPrefix: resp.endsInPunctuation ? '' : options.prefix,

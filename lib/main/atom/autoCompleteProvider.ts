@@ -130,7 +130,8 @@ export var provider: autocompleteplus.Provider = {
                     var relativePath = file.relativePath;
 
                     /** Optionally customize this in future */
-                    var suggestionText = relativePath;
+                    var suggestionText = !atomConfig.modulePathToProjectRoot || /^(?!\.\.\/)/.test(relativePath) ?
+                        relativePath : '~/' + atom.project.relativize(file.fullPath).replace(/\\/g, '/');
 
                     var suggestion: autocompleteplus.Suggestion = {
                         text: suggestionText,
@@ -250,7 +251,7 @@ export var provider: autocompleteplus.Provider = {
 
                 // Use the option if they have a preferred. Otherwise preserve
                 quote = quote || groups[2];
-                
+
                 var newTextAfterFrom = `from ${quote}${options.suggestion.atomTS_IsES6Import.relativePath}${quote};`;
                 options.editor.setTextInBufferRange([[row, beforeFrom.length], [row, originalText.length]], newTextAfterFrom)
 
