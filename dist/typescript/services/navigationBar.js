@@ -143,17 +143,17 @@ var ts;
                 var keyToItem = {};
                 for (var _i = 0; _i < nodes.length; _i++) {
                     var child = nodes[_i];
-                    var item = createItem(child);
-                    if (item !== undefined) {
-                        if (item.text.length > 0) {
-                            var key = item.text + "-" + item.kind + "-" + item.indent;
+                    var item_1 = createItem(child);
+                    if (item_1 !== undefined) {
+                        if (item_1.text.length > 0) {
+                            var key = item_1.text + "-" + item_1.kind + "-" + item_1.indent;
                             var itemWithSameName = keyToItem[key];
                             if (itemWithSameName) {
-                                merge(itemWithSameName, item);
+                                merge(itemWithSameName, item_1);
                             }
                             else {
-                                keyToItem[key] = item;
-                                items.push(item);
+                                keyToItem[key] = item_1;
+                                items.push(item_1);
                             }
                         }
                     }
