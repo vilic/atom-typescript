@@ -72,7 +72,10 @@ exports.provider = {
             });
         }
         else {
-            if (options.prefix && options.prefix.trim() == ';') {
+            var bufferPosition = options.bufferPosition;
+            var bufferChar = options.editor.buffer.lines[bufferPosition.row][bufferPosition.column];
+            if (lastScope == 'punctuation.section.scope.end.ts' ||
+                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';')) {
                 return Promise.resolve([]);
             }
             var position = atomUtils.getEditorPositionForBufferPosition(options.editor, options.bufferPosition);
@@ -136,7 +139,7 @@ exports.provider = {
                 options.editor.replaceSelectedText(null, function () { return "import " + alias + " = require(" + quote + options.suggestion.atomTS_IsImport.relativePath + quote + ");"; });
             }
             if (options.suggestion.atomTS_IsES6Import) {
-                var row = (options.editor.getCursorBufferPosition()).row;
+                var row = options.editor.getCursorBufferPosition().row;
                 var originalText = options.editor.lineTextForBufferRow(row);
                 var groups = /(.*)from\s*(["'])/.exec(originalText);
                 var beforeFrom = groups[1];

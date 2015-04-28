@@ -11,11 +11,11 @@ function getIdentifierAndFileNames(error, project) {
     if (!match)
         return;
     var identifierName = match[1];
-    var files = (getPathCompletions_1.getPathCompletions({
+    var files = getPathCompletions_1.getPathCompletions({
         project: project,
         filePath: error.file.fileName,
         prefix: identifierName,
-        includeExternalModules: false })).files;
+        includeExternalModules: false }).files;
     var file = files.length > 0 ? files[0].relativePath : undefined;
     var basename = files.length > 0 ? files[0].name : undefined;
     return { identifierName: identifierName, file: file, basename: basename };

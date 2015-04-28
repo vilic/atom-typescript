@@ -164,8 +164,12 @@ export var provider: autocompleteplus.Provider = {
             });
         }
         else {
-
-            if (options.prefix && options.prefix.trim() == ';') {
+            var bufferPosition = options.bufferPosition;
+            var bufferChar = options.editor.buffer.lines[bufferPosition.row][bufferPosition.column];
+            if (
+                lastScope == 'punctuation.section.scope.end.ts' ||
+                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';')
+            ) {
                 return Promise.resolve([]);
             }
 
