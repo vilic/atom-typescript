@@ -76,7 +76,8 @@ exports.provider = {
             var bufferLine = options.editor.buffer.lines[bufferPosition.row];
             var bufferChar = bufferLine[bufferPosition.column];
             var beforeBufferChar = bufferLine[bufferPosition.column - 1];
-            if (lastScope == 'punctuation.section.scope.end.ts' ||
+            if (lastScope == 'keyword.operator.js' ||
+                lastScope == 'punctuation.section.scope.end.ts' ||
                 (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
                 beforeBufferChar == ')') {
                 return Promise.resolve([]);
