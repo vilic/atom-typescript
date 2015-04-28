@@ -76,13 +76,14 @@ exports.provider = {
             var bufferLine = options.editor.buffer.lines[bufferPosition.row];
             var bufferChar = bufferLine[bufferPosition.column];
             var beforeBufferChar = bufferLine[bufferPosition.column - 1];
-            if (lastScope == 'keyword.operator.js' ||
-                lastScope == 'punctuation.section.scope.end.ts' ||
+            if (lastScope == 'punctuation.section.scope.end.ts' ||
                 (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                beforeBufferChar == ',' ||
                 beforeBufferChar == ')') {
                 return Promise.resolve([]);
             }
-            var position = atomUtils.getEditorPositionForBufferPosition(options.editor, options.bufferPosition);
+            var position = atomUtils.getEditorPositionForBufferPosition(options.editor, bufferPosition);
             var promisedSuggestions = parent.getCompletionsAtPosition({
                 filePath: filePath,
                 position: position,

@@ -170,15 +170,16 @@ export var provider: autocompleteplus.Provider = {
             var beforeBufferChar = bufferLine[bufferPosition.column - 1];
 
             if (
-                lastScope == 'keyword.operator.js' ||
                 lastScope == 'punctuation.section.scope.end.ts' ||
                 (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                beforeBufferChar == ',' ||
                 beforeBufferChar == ')'
             ) {
                 return Promise.resolve([]);
             }
 
-            var position = atomUtils.getEditorPositionForBufferPosition(options.editor, options.bufferPosition);
+            var position = atomUtils.getEditorPositionForBufferPosition(options.editor, bufferPosition);
 
             var promisedSuggestions: Promise<autocompleteplus.Suggestion[]>
                 = parent.getCompletionsAtPosition({
