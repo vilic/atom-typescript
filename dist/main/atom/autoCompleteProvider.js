@@ -73,9 +73,12 @@ exports.provider = {
         }
         else {
             var bufferPosition = options.bufferPosition;
-            var bufferChar = options.editor.buffer.lines[bufferPosition.row][bufferPosition.column];
+            var bufferLine = options.editor.buffer.lines[bufferPosition.row];
+            var bufferChar = bufferLine[bufferPosition.column];
+            var beforeBufferChar = bufferLine[bufferPosition.column - 1];
             if (lastScope == 'punctuation.section.scope.end.ts' ||
-                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';')) {
+                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                beforeBufferChar == ')') {
                 return Promise.resolve([]);
             }
             var position = atomUtils.getEditorPositionForBufferPosition(options.editor, options.bufferPosition);
