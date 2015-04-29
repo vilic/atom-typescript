@@ -82,11 +82,11 @@ exports.provider = {
                 var bufferLine = options.editor.buffer.lines[bufferPosition.row];
                 var bufferChar = bufferLine[bufferPosition.column];
                 var beforeBufferChar = bufferLine[bufferPosition.column - 1];
-                if (lastScope == 'punctuation.section.scope.end.ts' ||
-                    (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                if (!/[.\d\w$]/.test(options.prefix) && (lastScope == 'punctuation.section.scope.end.ts' ||
+                    lastScope == 'punctuation.terminator.statement.ts' ||
                     (lastScope == 'punctuation' && !options.prefix) ||
                     beforeBufferChar == ',' ||
-                    beforeBufferChar == ')') {
+                    beforeBufferChar == ')')) {
                     return Promise.resolve([]);
                 }
             }
@@ -109,12 +109,10 @@ exports.provider = {
                     }
                     else {
                         return {
-                            text: c.name,
+                            text: options.prefix == ' ' ? options.prefix + c.name : c.name,
                             replacementPrefix: resp.endsInPunctuation ? '' : options.prefix,
-                            rightLabelHTML: '<span class="badge" style="background-color: black; color: ' + atomUtils.kindToColor(c.kind) + '">' + c.display + '</span>',
-                            leftLabel: c.kind,
                             type: atomUtils.kindToType(c.kind),
-                            description: c.comment,
+                            description: c.display + (c.comment ? '; ' + c.comment : '')
                         };
                     }
                 });
@@ -151,7 +149,7 @@ exports.provider = {
                 options.editor.replaceSelectedText(null, function () { return "import " + alias + " = require(" + quote + options.suggestion.atomTS_IsImport.relativePath + quote + ");"; });
             }
             if (options.suggestion.atomTS_IsES6Import) {
-                var row = (options.editor.getCursorBufferPosition()).row;
+                var row = options.editor.getCursorBufferPosition().row;
                 var originalText = options.editor.lineTextForBufferRow(row);
                 var groups = /(.*)from\s*(["'])/.exec(originalText);
                 var beforeFrom = groups[1];

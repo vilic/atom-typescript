@@ -175,13 +175,15 @@ export var provider: autocompleteplus.Provider = {
                 var bufferLine = options.editor.buffer.lines[bufferPosition.row];
                 var bufferChar = bufferLine[bufferPosition.column];
                 var beforeBufferChar = bufferLine[bufferPosition.column - 1];
-
+                // console.log(lastScope, bufferChar, beforeBufferChar);
                 if (
-                    lastScope == 'punctuation.section.scope.end.ts' ||
-                    (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                    (lastScope == 'punctuation' && !options.prefix) ||
-                    beforeBufferChar == ',' ||
-                    beforeBufferChar == ')'
+                    !/[.\d\w$]/.test(options.prefix) && (
+                        lastScope == 'punctuation.section.scope.end.ts' ||
+                        lastScope == 'punctuation.terminator.statement.ts' ||
+                        (lastScope == 'punctuation' && !options.prefix) ||
+                        beforeBufferChar == ',' ||
+                        beforeBufferChar == ')'
+                    )
                 ) {
                     return Promise.resolve([]);
                 }
@@ -211,12 +213,14 @@ export var provider: autocompleteplus.Provider = {
                         }
                         else {
                             return {
-                                text: c.name,
+                                text: options.prefix == ' ' ? options.prefix + c.name : c.name,
                                 replacementPrefix: resp.endsInPunctuation ? '' : options.prefix,
-                                rightLabelHTML: '<span class="badge" style="background-color: black; color: ' + atomUtils.kindToColor(c.kind) + '">' + c.display + '</span>',
-                                leftLabel: c.kind,
+                                // rightLabelHTML: '<span class="badge" style="background-color: black; color: ' + atomUtils.kindToColor(c.kind) + '">' +  + '</span>',
+                                // leftLabel: c.kind,
+                                // rightLabel: c.kind,
+                                // rightLabel: c.display,
                                 type: atomUtils.kindToType(c.kind),
-                                description: c.comment,
+                                description: c.display + (c.comment ? '; ' + c.comment : '')
                             };
                         }
                     });
