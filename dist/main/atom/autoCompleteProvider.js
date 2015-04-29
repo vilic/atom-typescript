@@ -5,8 +5,10 @@ var fs = require('fs');
 var atomUtils = require('./atomUtils');
 var fuzzaldrin = require('fuzzaldrin');
 var CSON = require("season");
+var explicitlyTriggered = false;
 function triggerAutocompletePlus() {
     atom.commands.dispatch(atom.views.getView(atom.workspace.getActiveTextEditor()), 'autocomplete-plus:activate');
+    explicitlyTriggered = true;
 }
 exports.triggerAutocompletePlus = triggerAutocompletePlus;
 var tsSnipPrefixLookup = Object.create(null);
@@ -73,15 +75,20 @@ exports.provider = {
         }
         else {
             var bufferPosition = options.bufferPosition;
-            var bufferLine = options.editor.buffer.lines[bufferPosition.row];
-            var bufferChar = bufferLine[bufferPosition.column];
-            var beforeBufferChar = bufferLine[bufferPosition.column - 1];
-            if (lastScope == 'punctuation.section.scope.end.ts' ||
-                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                (lastScope == 'punctuation' && beforeBufferChar != '.') ||
-                beforeBufferChar == ',' ||
-                beforeBufferChar == ')') {
-                return Promise.resolve([]);
+            if (explicitlyTriggered) {
+                explicitlyTriggered = false;
+            }
+            else {
+                var bufferLine = options.editor.buffer.lines[bufferPosition.row];
+                var bufferChar = bufferLine[bufferPosition.column];
+                var beforeBufferChar = bufferLine[bufferPosition.column - 1];
+                if (lastScope == 'punctuation.section.scope.end.ts' ||
+                    (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                    (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                    beforeBufferChar == ',' ||
+                    beforeBufferChar == ')') {
+                    return Promise.resolve([]);
+                }
             }
             var position = atomUtils.getEditorPositionForBufferPosition(options.editor, bufferPosition);
             var promisedSuggestions = parent.getCompletionsAtPosition({

@@ -59,10 +59,12 @@ declare module autocompleteplus {
     }
 }
 
+var explicitlyTriggered = false;
 export function triggerAutocompletePlus() {
     atom.commands.dispatch(
         atom.views.getView(atom.workspace.getActiveTextEditor()),
         'autocomplete-plus:activate');
+    explicitlyTriggered = true;
 }
 
 // the structure stored in the CSON snippet file
@@ -165,18 +167,24 @@ export var provider: autocompleteplus.Provider = {
         }
         else {
             var bufferPosition = options.bufferPosition;
-            var bufferLine = options.editor.buffer.lines[bufferPosition.row];
-            var bufferChar = bufferLine[bufferPosition.column];
-            var beforeBufferChar = bufferLine[bufferPosition.column - 1];
+            // if explicitly triggered reset the explicit nature
+            if (explicitlyTriggered) {
+                explicitlyTriggered = false;
+            }
+            else { // else in special cases for automatic triggering refuse to provide completions
+                var bufferLine = options.editor.buffer.lines[bufferPosition.row];
+                var bufferChar = bufferLine[bufferPosition.column];
+                var beforeBufferChar = bufferLine[bufferPosition.column - 1];
 
-            if (
-                lastScope == 'punctuation.section.scope.end.ts' ||
-                (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                (lastScope == 'punctuation' && beforeBufferChar != '.') ||
-                beforeBufferChar == ',' ||
-                beforeBufferChar == ')'
-            ) {
-                return Promise.resolve([]);
+                if (
+                    lastScope == 'punctuation.section.scope.end.ts' ||
+                    (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
+                    (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                    beforeBufferChar == ',' ||
+                    beforeBufferChar == ')'
+                ) {
+                    return Promise.resolve([]);
+                }
             }
 
             var position = atomUtils.getEditorPositionForBufferPosition(options.editor, bufferPosition);
