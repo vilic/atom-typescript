@@ -84,7 +84,7 @@ exports.provider = {
                 var beforeBufferChar = bufferLine[bufferPosition.column - 1];
                 if (lastScope == 'punctuation.section.scope.end.ts' ||
                     (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                    (lastScope == 'punctuation' && options.prefix) ||
+                    (lastScope == 'punctuation' && !options.prefix) ||
                     beforeBufferChar == ',' ||
                     beforeBufferChar == ')') {
                     return Promise.resolve([]);
@@ -151,7 +151,7 @@ exports.provider = {
                 options.editor.replaceSelectedText(null, function () { return "import " + alias + " = require(" + quote + options.suggestion.atomTS_IsImport.relativePath + quote + ");"; });
             }
             if (options.suggestion.atomTS_IsES6Import) {
-                var row = options.editor.getCursorBufferPosition().row;
+                var row = (options.editor.getCursorBufferPosition()).row;
                 var originalText = options.editor.lineTextForBufferRow(row);
                 var groups = /(.*)from\s*(["'])/.exec(originalText);
                 var beforeFrom = groups[1];

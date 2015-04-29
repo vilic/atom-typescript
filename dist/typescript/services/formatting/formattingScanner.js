@@ -56,7 +56,7 @@ var ts;
                         break;
                     }
                     scanner.scan();
-                    var item = {
+                    var item_1 = {
                         pos: pos,
                         end: scanner.getStartPos(),
                         kind: t_1
@@ -65,7 +65,7 @@ var ts;
                     if (!leadingTrivia) {
                         leadingTrivia = [];
                     }
-                    leadingTrivia.push(item);
+                    leadingTrivia.push(item_1);
                 }
                 savedPos = scanner.getStartPos();
             }
