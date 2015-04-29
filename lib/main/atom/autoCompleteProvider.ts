@@ -179,7 +179,7 @@ export var provider: autocompleteplus.Provider = {
                 if (
                     lastScope == 'punctuation.section.scope.end.ts' ||
                     (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                    (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                    (lastScope == 'punctuation' && options.prefix) ||
                     beforeBufferChar == ',' ||
                     beforeBufferChar == ')'
                 ) {

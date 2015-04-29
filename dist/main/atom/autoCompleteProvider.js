@@ -84,7 +84,7 @@ exports.provider = {
                 var beforeBufferChar = bufferLine[bufferPosition.column - 1];
                 if (lastScope == 'punctuation.section.scope.end.ts' ||
                     (lastScope == 'punctuation.terminator.statement.ts' && bufferChar != ';') ||
-                    (lastScope == 'punctuation' && beforeBufferChar != '.') ||
+                    (lastScope == 'punctuation' && options.prefix) ||
                     beforeBufferChar == ',' ||
                     beforeBufferChar == ')') {
                     return Promise.resolve([]);
